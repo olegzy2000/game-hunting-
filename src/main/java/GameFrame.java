@@ -10,6 +10,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 
 public class GameFrame extends JFrame {
@@ -64,13 +65,8 @@ public class GameFrame extends JFrame {
         start.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if(comboBox.getSelectedIndex()==0) {
-                    initFirstLevel();
+                    initStart();
                 }
-                else if(comboBox.getSelectedIndex()==1){
-                    initSecondLevel();
-                }
-                else
-                    initThirdLevel();
             }
 
         });
@@ -86,49 +82,68 @@ public class GameFrame extends JFrame {
         optionsPanel.add(exit);
         add(optionsPanel, BorderLayout.WEST);
     }
-    private void initFirstLevel(){
-        gamePanel.removeAll();
-        Bot dog = new Bot(1, -50, 600, new ImageIcon("dogRight.gif"));
-        Bot bird = new Bot(1, 1300, 0, new ImageIcon("birdLeft.gif"));
-        gamePanel.add(dog);
-        gamePanel.add(bird);
-        gamePanel.revalidate();
+
+
+    private Timer secondTimer;
+    private Timer firstTimer;
+    private int time1 =0;
+    private int time2=0;
+
+    private void initStart(){
+        firstTimer=new Timer(45, new ActionListener() {
+           @Override
+           public void actionPerformed(ActionEvent actionEvent) {
+               time2++;
+               if(time2%25==0)
+               System.out.println(time2);
+               if(time1==0) {
+       gamePanel.removeAll();
+       gamePanel.revalidate();
+       gamePanel.add(randomBird());
+       gamePanel.add(randomDog());
+       gamePanel.revalidate();
+           secondTimer = new Timer(13, new ActionListener() {
+               @Override
+               public void actionPerformed(ActionEvent actionEvent) {
+                   time1++;
+                   if (time1 == 250) {
+                       gamePanel.removeAll();
+                       gamePanel.revalidate();
+                       gamePanel.add(randomBird());
+                       gamePanel.add(randomDog());
+                       gamePanel.revalidate();
+                       time1 = 0;
+                       secondTimer.stop();
+                   }
+               }
+           });
+           secondTimer.start();
+       }
+           }
+       });
+        firstTimer.start();
     }
-    private Timer secondTask;
-    private int time=0;
-    private void initSecondLevel(){
-        gamePanel.removeAll();
-        Bot dog = new Bot(1, 1250, 600, new ImageIcon("dogLeft.gif"));
-        Bot bird = new Bot(1, -50, 0, new ImageIcon("birdRight.gif"));
-        gamePanel.add(dog);
-        gamePanel.add(bird);
-        secondTask=new Timer(13,new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                time++;
-                if(time==230){
-                    gamePanel.removeAll();
-                    Bot dog1 = new Bot(1, -50, 600, new ImageIcon("dogRight.gif"));
-                    Bot bird1 = new Bot(1, 1300, 0, new ImageIcon("birdLeft.gif"));
-                    gamePanel.add(dog1);
-                    gamePanel.add(bird1);
-                    gamePanel.revalidate();
-                    time=0;
-                    secondTask.stop();
-                }
-            }
-        });
-        secondTask.start();
-        gamePanel.revalidate();
+
+    private Bot randomBird(){
+        double indexRandoma=Math.random()*3;
+        if(indexRandoma>1){
+            return new Bot(1, -50, 0, new ImageIcon("birdRight.gif"));
+        }
+        else{
+           return new Bot(1, 1300, 0, new ImageIcon("birdLeft.gif"));
+        }
     }
-    private void initThirdLevel(){
-        gamePanel.removeAll();
-        Bot dog = new Bot(2, -50, 600, new ImageIcon("dogRight.gif"));
-        Bot bird = new Bot(2, 1300, 0, new ImageIcon("birdLeft.gif"));
-        gamePanel.add(dog);
-        gamePanel.add(bird);
-        gamePanel.revalidate();
+    private Bot randomDog(){
+        double indexRandoma=Math.random()*2;
+        if(indexRandoma>1){
+            return new Bot(1, 1250, 600, new ImageIcon("dogLeft.gif"));
+        }
+        else{
+           return new Bot(1, -50, 600, new ImageIcon("dogRight.gif"));
+        }
     }
+
+
     private void initOptionsPanel() {
         optionsPanel = new JPanel();
         optionsPanel.setLayout(new BoxLayout(optionsPanel, BoxLayout.Y_AXIS));

@@ -28,7 +28,6 @@ public class Bot extends JLabel {
                 timer = new Timer(13, new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         if (count == 13) {
-                            System.out.println(count);
                             setVisible(false);
                             timer.stop();
                             thread.stop();
