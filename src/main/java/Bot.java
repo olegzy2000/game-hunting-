@@ -9,13 +9,13 @@ import java.awt.event.MouseListener;
 import static java.lang.Thread.sleep;
 
 public class Bot extends JLabel {
-    private int speed;
+    private double speed;
     private int yCoordinate;
     private int xCoordinate;
     private int count;
     private Thread thread;
     private Timer timer;
-    public Bot(final int speed,final int xCoordinate, final int yCoordinate, ImageIcon imageIcon) {
+    public Bot(final double speed,final int xCoordinate, final int yCoordinate, ImageIcon imageIcon) {
         super(imageIcon);
         this.speed = speed;
         this.xCoordinate=xCoordinate;
@@ -62,7 +62,7 @@ public class Bot extends JLabel {
             @Override
             public void run() {
                 int i = xCoordinate;
-                int speed1 = 0;
+                double speed1 = 0;
                 if(i>1)
                     speed1=-speed;
                 else

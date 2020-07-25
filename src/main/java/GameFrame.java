@@ -10,14 +10,15 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Logger;
+import java.util.TimerTask;
+import java.util.Timer;
 
 
 public class GameFrame extends JFrame {
     private JPanel optionsPanel;
     private JPanel gamePanel;
     private JComboBox comboBox;
-
+    private JButton start;
     public GameFrame() {
         super("Saphary");
         setSize(1300, 850);
@@ -60,86 +61,63 @@ public class GameFrame extends JFrame {
     private void initOptionsButton() {
         optionsPanel=new JPanel();
         JButton exit = new JButton("Exit");
-        JButton start = new JButton("Start");
+        start = new JButton("Start");
         optionsPanel.add(start);
         start.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if(comboBox.getSelectedIndex()==0) {
+                    start.setEnabled(false);
                     initStart();
-                }
             }
 
         });
-        String[] items={"1 level","2 level","3 level"};
-        comboBox=new JComboBox(items);
         exit.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 System.exit(0);
             }
 
         });
-        optionsPanel.add(comboBox);
         optionsPanel.add(exit);
         add(optionsPanel, BorderLayout.WEST);
     }
 
-
-    private Timer secondTimer;
-    private Timer firstTimer;
-    private int time1 =0;
-    private int time2=0;
-
     private void initStart(){
-        firstTimer=new Timer(45, new ActionListener() {
-           @Override
-           public void actionPerformed(ActionEvent actionEvent) {
-               time2++;
-               if(time2%25==0)
-               System.out.println(time2);
-               if(time1==0) {
-       gamePanel.removeAll();
-       gamePanel.revalidate();
-       gamePanel.add(randomBird());
-       gamePanel.add(randomDog());
-       gamePanel.revalidate();
-           secondTimer = new Timer(13, new ActionListener() {
-               @Override
-               public void actionPerformed(ActionEvent actionEvent) {
-                   time1++;
-                   if (time1 == 250) {
-                       gamePanel.removeAll();
-                       gamePanel.revalidate();
-                       gamePanel.add(randomBird());
-                       gamePanel.add(randomDog());
-                       gamePanel.revalidate();
-                       time1 = 0;
-                       secondTimer.stop();
-                   }
-               }
-           });
-           secondTimer.start();
-       }
-           }
-       });
-        firstTimer.start();
+         Timer timer = new Timer("Timer");
+         TimerTask gameProcess=new TimerTask() {
+             int amountRound=0;
+             @Override
+            public void run() {
+                amountRound++;
+              gamePanel.removeAll();
+              gamePanel.revalidate();
+              gamePanel.add(randomBird(amountRound));
+              gamePanel.add(randomDog(amountRound));
+              gamePanel.revalidate();
+              if(amountRound==10) {
+                  start.setEnabled(true);
+                  revalidate();
+                  cancel();
+              }
+            }
+        };
+        timer.scheduleAtFixedRate(gameProcess, 1000L, 5000L);
     }
 
-    private Bot randomBird(){
+    private Bot randomBird(double speed){
         double indexRandoma=Math.random()*3;
         if(indexRandoma>1){
-            return new Bot(1, -50, 0, new ImageIcon("birdRight.gif"));
+            return new Bot((1.2+speed*0.2), -50, 0, new ImageIcon("birdRight.gif"));
         }
         else{
-           return new Bot(1, 1300, 0, new ImageIcon("birdLeft.gif"));
+           return new Bot((1.2+speed*0.2), 1300, 0, new ImageIcon("birdLeft.gif"));
         }
     }
-    private Bot randomDog(){
+    private Bot randomDog(double speed){
         double indexRandoma=Math.random()*2;
         if(indexRandoma>1){
-            return new Bot(1, 1250, 600, new ImageIcon("dogLeft.gif"));
+            return new Bot((1.2+(speed*0.2)), 1250, 600, new ImageIcon("dogLeft.gif"));
         }
         else{
-           return new Bot(1, -50, 600, new ImageIcon("dogRight.gif"));
+           return new Bot((1.2+(speed*0.2)), -50, 600, new ImageIcon("dogRight.gif"));
         }
     }
 
