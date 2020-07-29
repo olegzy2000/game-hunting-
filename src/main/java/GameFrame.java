@@ -15,18 +15,17 @@ import java.util.Timer;
 
 
 public class GameFrame extends JFrame {
-    private JPanel optionsPanel;
     private JPanel gamePanel;
+    private int kills=0;
     private JComboBox comboBox;
-    private JButton start;
     public GameFrame() {
-        super("Saphary");
-        setSize(1300, 850);
+        super("Hunting");
+        setSize(1250, 850);
         setVisible(true);
         setResizable(false);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
-        initOptionsPanel();
+        initMenu();
         initGamePanel();
         revalidate();
         SongHelper.playSong();
@@ -48,7 +47,12 @@ public class GameFrame extends JFrame {
         gamePanel.addMouseListener(new MouseListener() {
 
             public void mouseClicked(MouseEvent ee) {
-                gamePanel.remove(ee.getComponent());
+                if(ee.getComponent() instanceof JPanel)
+                    System.out.println("MIMI");
+                else {
+                    kills++;
+                    System.out.println(kills);
+                }
                 SongHelper.gunBang();
             }
             public void mousePressed(MouseEvent e) {}
@@ -58,29 +62,10 @@ public class GameFrame extends JFrame {
         });
         add(gamePanel);
     }
-    private void initOptionsButton() {
-        optionsPanel=new JPanel();
-        JButton exit = new JButton("Exit");
-        start = new JButton("Start");
-        optionsPanel.add(start);
-        start.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                    start.setEnabled(false);
-                    initStart();
-            }
 
-        });
-        exit.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                System.exit(0);
-            }
-
-        });
-        optionsPanel.add(exit);
-        add(optionsPanel, BorderLayout.WEST);
-    }
 
     private void initStart(){
+        Bot.startKills();
          Timer timer = new Timer("Timer");
          TimerTask gameProcess=new TimerTask() {
              int amountRound=0;
@@ -92,11 +77,10 @@ public class GameFrame extends JFrame {
               gamePanel.add(randomBird(amountRound));
               gamePanel.add(randomDog(amountRound));
               gamePanel.revalidate();
-              if(amountRound==10) {
-                  start.setEnabled(true);
-                  revalidate();
-                  cancel();
-              }
+                 if(amountRound==10) {
+                     revalidate();
+                     cancel();
+                 }
             }
         };
         timer.scheduleAtFixedRate(gameProcess, 1000L, 5000L);
@@ -122,9 +106,18 @@ public class GameFrame extends JFrame {
     }
 
 
-    private void initOptionsPanel() {
-        optionsPanel = new JPanel();
-        optionsPanel.setLayout(new BoxLayout(optionsPanel, BoxLayout.Y_AXIS));
-        initOptionsButton();
+    private void initMenu() {
+        JMenuBar menuBar=new JMenuBar();
+        JMenu menu=new JMenu("New");
+        JMenuItem start=new JMenuItem("Start game");
+        start.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                initStart();
+            }
+        });
+        menu.add(start);
+        menuBar.add(menu);
+        setJMenuBar(menuBar);
     }
 }

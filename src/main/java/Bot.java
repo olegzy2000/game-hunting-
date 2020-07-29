@@ -15,15 +15,18 @@ public class Bot extends JLabel {
     private int count;
     private Thread thread;
     private Timer timer;
-    public Bot(final double speed,final int xCoordinate, final int yCoordinate, ImageIcon imageIcon) {
+    public static int kills = 0;
+
+    public Bot(final double speed, final int xCoordinate, final int yCoordinate, ImageIcon imageIcon) {
         super(imageIcon);
         this.speed = speed;
-        this.xCoordinate=xCoordinate;
+        this.xCoordinate = xCoordinate;
         this.yCoordinate = yCoordinate;
         addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(final MouseEvent mouseEvent) {
                 SongHelper.gunBang();
+                addKills();
                 setIcon(new ImageIcon("dead.gif"));
                 timer = new Timer(13, new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
@@ -58,23 +61,23 @@ public class Bot extends JLabel {
             public void mouseExited(MouseEvent mouseEvent) {
             }
         });
-       thread=new Thread(new Runnable() {
+        thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 int i = xCoordinate;
                 double speed1 = 0;
-                if(i>1)
-                    speed1=-speed;
+                if (i > 1)
+                    speed1 = -speed;
                 else
-                    speed1=speed;
+                    speed1 = speed;
                 while (i < 1320) {
-                    setLocation(i += 5*speed1, yCoordinate);
+                    setLocation(i += 5 * speed1, yCoordinate);
                     try {
                         sleep(24);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    if(i<-200){
+                    if (i < -200) {
                         thread.stop();
                         timer.stop();
                         break;
@@ -84,10 +87,20 @@ public class Bot extends JLabel {
                 revalidate();
             }
         });
-       thread.start();
+        thread.start();
         revalidate();
     }
+
+    public static int getKills() {
+        return kills;
     }
+    public static void startKills(){
+        kills=0;
+    }
+    public static void addKills(){
+        kills++;
+    }
+}
 
 
 
