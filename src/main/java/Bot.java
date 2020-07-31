@@ -16,6 +16,7 @@ public class Bot extends JLabel {
     private Thread thread;
     private Timer timer;
     public static int kills = 0;
+    private boolean dead=false;
 
     public Bot(final double speed, final int xCoordinate, final int yCoordinate, ImageIcon imageIcon) {
         super(imageIcon);
@@ -26,7 +27,10 @@ public class Bot extends JLabel {
             @Override
             public void mouseClicked(final MouseEvent mouseEvent) {
                 SongHelper.gunBang();
-                addKills();
+                if(!dead) {
+                    addKills();
+                    dead=true;
+                }
                 setIcon(new ImageIcon("dead.gif"));
                 timer = new Timer(13, new ActionListener() {
                     public void actionPerformed(ActionEvent e) {

@@ -1,6 +1,3 @@
-
-
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -16,7 +13,6 @@ import java.util.Timer;
 
 public class GameFrame extends JFrame {
     private JPanel gamePanel;
-    private int kills=0;
     private JComboBox comboBox;
     public GameFrame() {
         super("Hunting");
@@ -47,12 +43,6 @@ public class GameFrame extends JFrame {
         gamePanel.addMouseListener(new MouseListener() {
 
             public void mouseClicked(MouseEvent ee) {
-                if(ee.getComponent() instanceof JPanel)
-                    System.out.println("MIMI");
-                else {
-                    kills++;
-                    System.out.println(kills);
-                }
                 SongHelper.gunBang();
             }
             public void mousePressed(MouseEvent e) {}
@@ -71,13 +61,17 @@ public class GameFrame extends JFrame {
              int amountRound=0;
              @Override
             public void run() {
-                amountRound++;
-              gamePanel.removeAll();
-              gamePanel.revalidate();
-              gamePanel.add(randomBird(amountRound));
-              gamePanel.add(randomDog(amountRound));
-              gamePanel.revalidate();
-                 if(amountRound==10) {
+                 if(amountRound<=10) {
+                     amountRound++;
+                     gamePanel.removeAll();
+                     gamePanel.revalidate();
+                     gamePanel.add(randomBird(amountRound));
+                     gamePanel.add(randomDog(amountRound));
+                     gamePanel.revalidate();
+                 }
+                 else {
+                     gamePanel.removeAll();
+                     InformationFrame infoFrame=new InformationFrame(Bot.getKills());
                      revalidate();
                      cancel();
                  }
