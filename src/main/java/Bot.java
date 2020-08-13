@@ -26,6 +26,11 @@ public class Bot extends JLabel {
         addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(final MouseEvent mouseEvent) {
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent mouseEvent) {
                 SongHelper.gunBang();
                 if(!dead) {
                     addKills();
@@ -44,11 +49,6 @@ public class Bot extends JLabel {
                     }
                 });
                 timer.start();
-            }
-
-            @Override
-            public void mousePressed(MouseEvent mouseEvent) {
-
             }
 
             @Override

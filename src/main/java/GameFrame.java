@@ -7,13 +7,15 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.Timer;
 
 
 public class GameFrame extends JFrame {
     private JPanel gamePanel;
-    private JComboBox comboBox;
+    private DatabaseHelper databaseHelper;
+    private Map<Integer,String>mapIdNames;
+    private int defaultId=4;
     public GameFrame() {
         super("Hunting");
         setSize(1250, 850);
@@ -21,10 +23,19 @@ public class GameFrame extends JFrame {
         setResizable(false);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
+        initDataBase();
         initMenu();
         initGamePanel();
         revalidate();
         SongHelper.playSong();
+    }
+
+    private void initDataBase() {
+        databaseHelper=new DatabaseHelper();
+        updateDataBase();
+    }
+    private void updateDataBase(){
+        mapIdNames=databaseHelper.getArrayOfNamesPlayers();
     }
 
     private void initGamePanel() {
@@ -41,7 +52,6 @@ public class GameFrame extends JFrame {
         };
         gamePanel.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
         gamePanel.addMouseListener(new MouseListener() {
-
             public void mouseClicked(MouseEvent ee) {
                 SongHelper.gunBang();
             }
@@ -72,6 +82,10 @@ public class GameFrame extends JFrame {
                  else {
                      gamePanel.removeAll();
                      InformationFrame infoFrame=new InformationFrame(Bot.getKills());
+                     if(databaseHelper.getRecord(defaultId)<Bot.getKills()){
+                         databaseHelper.updatePlayer(defaultId,Bot.getKills());
+                     }
+                     databaseHelper.updateAmountGames(defaultId);
                      revalidate();
                      cancel();
                  }
@@ -111,7 +125,42 @@ public class GameFrame extends JFrame {
             }
         });
         menu.add(start);
+        JMenuItem insertNewPerson=new JMenuItem("Insert new player");
+        insertNewPerson.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                String result = JOptionPane.showInputDialog(
+                        null,
+                        "Input name of new player");
+                databaseHelper.insertPlayer(result);
+                updateDataBase();
+            }
+        });
+        menu.add(insertNewPerson);
+
+
+        JMenuItem choosePerson=new JMenuItem("Choose person");
+        choosePerson.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                String res = (String) JOptionPane.showInputDialog(null, "Choose your player", "Players",
+                        JOptionPane.PLAIN_MESSAGE, null, mapIdNames.values().toArray(), mapIdNames.values().toArray()[0]);
+                defaultId=getIdByName(res);
+                System.out.println(defaultId);
+            }
+        });
+        menu.add(choosePerson);
         menuBar.add(menu);
         setJMenuBar(menuBar);
+    }
+    private int getIdByName(String value){
+        Optional<Integer> result = mapIdNames
+                .entrySet()
+                .stream()
+                .filter(entry -> value
+                        .equals(entry.getValue()))
+                .map(Map.Entry::getKey)
+                .findFirst();
+            return result.get().intValue();
     }
 }
