@@ -53,9 +53,9 @@ public class GameFrame extends JFrame {
         gamePanel.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
         gamePanel.addMouseListener(new MouseListener() {
             public void mouseClicked(MouseEvent ee) {
-                SongHelper.gunBang();
+
             }
-            public void mousePressed(MouseEvent e) {}
+            public void mousePressed(MouseEvent e) {SongHelper.gunBang();}
             public void mouseReleased(MouseEvent e) {}
             public void mouseEntered(MouseEvent e) {}
             public void mouseExited(MouseEvent e) {}
