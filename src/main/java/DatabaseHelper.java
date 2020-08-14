@@ -72,4 +72,13 @@ public class DatabaseHelper {
         }
         return map;
     }
+    public void showTable(){
+        try {
+            ResultSet resultSet = statement.executeQuery("select * from players;");
+            DataTable dataTable=new DataTable(resultSet);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Error in open table");
+        }
+    }
 }

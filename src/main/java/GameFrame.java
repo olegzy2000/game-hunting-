@@ -150,7 +150,18 @@ public class GameFrame extends JFrame {
             }
         });
         menu.add(choosePerson);
+
+        JMenu menuShow=new JMenu("Show");
+        JMenuItem showTable=new JMenuItem("Table");
+        showTable.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                databaseHelper.showTable();
+            }
+        });
+        menuShow.add(showTable);
         menuBar.add(menu);
+        menuBar.add(menuShow);
         setJMenuBar(menuBar);
     }
     private int getIdByName(String value){
